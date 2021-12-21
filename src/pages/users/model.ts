@@ -1,4 +1,5 @@
 import { Reducer, Effect, Subscription } from 'umi';
+import { getRemoteList } from './service';
 
 interface UserModelType {
   namespace: 'users';
@@ -6,7 +7,9 @@ interface UserModelType {
   reducers: {
     getList: Reducer;
   };
-  effects: {};
+  effects: {
+    getRemote: Effect;
+  };
   subscriptions: {
     setup: Subscription;
   };
@@ -15,42 +18,32 @@ interface UserModelType {
 const UserModel: UserModelType = {
   namespace: 'users',
   state: {},
+  // 同步更新 state
   reducers: {
-    getList(state, action) {
-      const data = [
-        {
-          key: '1',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park',
-          tags: ['nice', 'developer'],
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          age: 42,
-          address: 'London No. 1 Lake Park',
-          tags: ['loser'],
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park',
-          tags: ['cool', 'teacher'],
-        },
-      ];
-      return data;
+    getList(state, { payload }) {
+      return payload;
     },
   },
+  // 异步
   effects: {
+    *getRemote(action, { put, call }) {
+      const res = yield call(getRemoteList);
+      yield put({
+        type: 'getList',
+        payload: {
+          list: res.data,
+          meta: res.meta,
+        },
+      })
+    },
   },
+  // 订阅
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
         if (pathname === '/users') {
           dispatch({
-            type: 'getList',
+            type: 'getRemote',
           })
         }
       });
