@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'antd';
-
-// interface IUserModal = {
-//   visible: boolean;
-//   record?: object;
-//   handleOk?: () => void;
-//   handleCancel?: () => void;
-// };
+import { Modal, Form, Input } from 'antd';
 
 const UserModal = ({ visible, record, handleOk, handleCancel }) => {
+  const [form] = Form.useForm();
+  console.log('record', record);
+
+  React.useEffect(() => {
+    form.setFieldsValue({
+      name: record.name,
+      email: record.email,
+      createTime: record.create_time,
+    });
+  }, [record]);
+
   return (
     <Modal
       title="Basic Modal"
@@ -16,7 +20,32 @@ const UserModal = ({ visible, record, handleOk, handleCancel }) => {
       onOk={handleOk}
       onCancel={handleCancel}
     >
-     {JSON.stringify(record)}
+     <Form
+      name="basic"
+      form={form}
+      labelCol={{ span: 5 }}
+    >
+      <Form.Item
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: '请输入用户名' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Email"
+        name="email"
+        rules={[{ required: true, message: '请输入邮箱地址' }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Create Time"
+        name="createTime"
+      >
+        <Input />
+      </Form.Item>
+    </Form>
     </Modal>
   )
 }

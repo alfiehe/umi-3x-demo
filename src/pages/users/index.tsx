@@ -23,7 +23,7 @@ const Index = (props) => {
       render: text => <a>{text}</a>,
     },
     {
-      title: 'Emial',
+      title: 'Email',
       dataIndex: 'email',
       key: 'email',
     },
@@ -31,6 +31,11 @@ const Index = (props) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+    },
+    {
+      title: 'Create Time',
+      dataIndex: 'create_time',
+      key: 'create_time',
     },
     {
       title: 'Action',
